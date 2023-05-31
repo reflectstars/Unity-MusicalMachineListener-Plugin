@@ -67,4 +67,36 @@ public:
         qitchdetector = new QitchDetector(sampleRate,4096); //512
         
         power = 0;
-      
+        centroid = 0;
+        irregularity = 0;
+        spectralentropy = 0;
+        sensorydissonance = 0;
+        keyclarity = 0;
+        
+        for (int i=0; i< NUMFEATURES; ++i) {
+            
+            features[i] = 0;
+        }
+        
+    }
+    
+    ~AudioFeatureExtractor() {
+        
+        delete spectralentropyextractor; 
+        delete sensorydissonanceextractor;
+        delete onsetdetector;
+        delete onsetstats;
+        delete beatstats; 
+        delete keyclarityextractor;
+        delete qitchdetector;
+        
+        delete stft1024;
+        delete stft2048;
+        delete stft4096;
+        
+    }
+    
+    void Calculate(float* input, float * outputfeatures); 
+    
+    
+};
