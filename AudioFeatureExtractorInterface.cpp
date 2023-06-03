@@ -90,4 +90,19 @@ DLLExport int SetupAudioFeatureExtractorR(float sampleRate, int blocksize) {
     return 3;
 }
 
-DLLExpo
+DLLExport void DeleteAudioFeatureExtractorR() {
+    
+    delete g_afe3;
+}
+
+
+DLLExport void CalculateR(float* input, float * outputfeatures) {
+    
+    g_afe3->Calculate(input,outputfeatures);
+    
+}
+
+#ifdef __cplusplus
+}
+#endif
+
