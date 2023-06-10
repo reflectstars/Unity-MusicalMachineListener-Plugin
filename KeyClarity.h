@@ -26,4 +26,21 @@ class KeyClarity {
 	float m_key[24];
     
 	float m_histogram[24];   //key histogram
-    //float m_keyleak; /
+    //float m_keyleak; //fade parameter for histogram
+	//int m_triggerid;
+    
+	int m_currentKey;
+    float m_currentMaxCorrelation;
+    
+    MMLLSTFT * stft;
+    
+public:
+    KeyClarity(float sr, MMLLSTFT * stft4096);
+    ~KeyClarity();
+    
+    float Calculate();
+    
+};
+
+
+
