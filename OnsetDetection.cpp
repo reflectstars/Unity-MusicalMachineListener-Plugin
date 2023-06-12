@@ -85,4 +85,113 @@ void OnsetDetection::calculatedf() {
 		bsum= bsum/bandsize;
 		
 		//into dB, avoid log of 0
-		//float db= 10*log
+		//float db= 10*log10((bsum*10000000)+0.001);
+		float db= 10*log10((bsum*32382)+0.001);
+		
+		//printf("bsum %f db %f \n",bsum,db);
+		
+		//convert via contour
+		if(db<g_contours[k][0]) db=0;
+        else if (db>g_contours[k][10]) db=g_phons[10];
+        else {
+            
+            float prop=0.0;
+			
+            for (j=1; j<11; ++j) {
+                if(db<g_contours[k][j]) {
+                    prop= (db-g_contours[k][j-1])/(g_contours[k][j]-g_contours[k][j-1]);
+                    break;
+				}
+				
+				if(j==10)
+					prop=1.0;
+            }
+			
+            db= (1.0-prop)*g_phons[j-1]+ prop*g_phons[j];
+			//printf("prop %f db %f j %d\n",prop,db,j);
+			
+		}
+		
+		//float lastloud=m_loudbands[k];
+		float lastloud=0.0;
+		
+		for(j=0;j<PASTERBBANDS; ++j)
+			lastloud+=m_loudbands[k][j];
+		
+		lastloud /= PASTERBBANDS;
+		
+		float diff = db-lastloud; //sc_max(db-lastloud,0.0);
+		
+        if(diff<0.0) diff = 0.0; 
+        
+		dfsum=dfsum+diff; //(bweights[k]*diff);
+		
+		m_loudbands[k][pastband]=db;
+	}
+	
+	m_pasterbbandcounter=(pastband+1)%PASTERBBANDS;
+	
+	//increment first so this frame is m_loudnesscounterdfcounter
+	m_dfcounter=(m_dfcounter+1)%DFFRAMESSTORED;
+	
+	m_df[m_dfcounter]=dfsum*0.025; //divide by num of bands to get a dB answer
+	
+	//printf("loudness %f %f \n",loudness[loudnesscounter], lsum);
+	
+	
+}
+
+
+//score rating peak picker
+void OnsetDetection::peakpickdf() {
+	int i;
+	
+	//smoothed already with df looking at average of previous values
+	int dfnow= m_dfcounter+DFFRAMESSTORED;
+	
+	//rate the peak in the central position
+	
+	int dfassess= ((dfnow-3)%DFFRAMESSTORED)+DFFRAMESSTORED;
+	
+	//look at three either side
+	
+	int pos;
+	float val;
+	
+	float centreval=m_df[dfassess%DFFRAMESSTORED];
+	
+	//must normalise
+	//printf("centreval %f \n",centreval);
+	
+	float score=0.0;
+	
+	for (i=(-3); i<4; ++i) {
+		pos= (dfassess+i)%DFFRAMESSTORED;
+		
+		val= centreval-(m_df[pos]);
+		
+		if(val<0) val*=10; //exacerbate negative evidence
+		
+		score=score+val;
+	}
+	
+	//normalise such that df max assumed at 50, 0.02
+	
+	score *= 0.02;
+	
+	//if enough time since last detection
+	if((m_frame-m_lastdetect)>=MINEVENTDUR) {
+		
+		//SIMPLE THRESHOLDING PEAKPICKER
+		float threshold = threshold_; //0.34; //ZIN0(2); //0.34 best in trials
+		
+		//printf("threshold %f score %f \n",threshold, score);
+		
+		if(score>=threshold) {
+			m_lastdetect=m_frame;
+			
+			m_onsetdetected=1;
+			
+        }
+	}
+}
