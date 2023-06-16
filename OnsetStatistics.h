@@ -72,4 +72,25 @@ public:
         // onsettimes_ = (int *) RTAlloc(mWorld, sizeof(int)* maxnumonsets);
         //onsettimesindex_ = 0;
         
-  
+        int i; 
+        
+        //    for (i=0; i<maxnumonsets; ++i) {
+        //        onsettimes_[i] = -99999999;
+        //        
+        //    }
+
+        
+        
+       
+    }
+    
+    ~OnsetStatistics() {
+ 
+        delete onsettimes_;
+        
+    }
+    
+    void Calculate(float input, float * featureoutput);
+    
+    
+};
