@@ -35,4 +35,30 @@ public:
         //will include guard element at top
         bandindices = new int[numbands+1]; //(int *)RTAlloc(mWorld, sizeof(int)*(numbands_+1));
         entropies = new float[numbands]; //(float *)RTAlloc(mWorld, sizeof(float)*numbands_);
-        //intensities = new float[numbins]; //(float *)RTAlloc(mWorld, sizeof(floa
+        //intensities = new float[numbins]; //(float *)RTAlloc(mWorld, sizeof(float)*numbins);
+        
+        for (i=0; i<numbands; ++i) {
+            
+            entropies[i] = 0.0f;
+            
+            bandindices[i] = split*i;
+            
+        }
+        
+        //guard can be one above actual final array slot index since always use less than in code below
+        bandindices[numbands] = numbins; //Nyquist position
+        
+    }
+    
+    ~SpectralEntropy() {
+ 
+        delete [] bandindices;
+        delete [] entropies;
+        //delete [] intensities;
+        
+    }
+    
+    float Calculate();
+    
+    
+};
