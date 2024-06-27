@@ -138,4 +138,41 @@ int main (int argc, const char * argv[]) {
     
        std::cout << "[";
     for(i=0; i< NUMFEATURES; ++i)
-        std::cout << m
+        std::cout << minima[i]<< ",";
+        std::cout << "]" <<std::endl;
+    
+    std::cout << "[";
+    for(i=0; i< NUMFEATURES; ++i)
+        std::cout << maxima[i]<< ",";
+    std::cout << "]" <<std::endl;
+
+    return 0;
+}
+
+
+
+
+
+
+
+//    //output to audio file
+//   	SNDFILE *file;
+//	SF_INFO info;
+//	//FILE *ofp;
+//	info.format = SF_FORMAT_WAV |  SF_FORMAT_PCM_16; 
+//	info.samplerate = 44100; 
+//	info.channels = 1; //mono for now 
+//
+//	if(!(file = sf_open("/Users/nickcollins/Desktop/dbmoutput.wav",SFM_WRITE,&info))){ 
+//        
+//        int errnum = sf_error(file);
+//		const char*	errorstring = sf_error_number(errnum);	
+//		
+//        printf("error opening output file %s \n", errorstring);     exit(-1);
+//        
+//	}  
+//
+//     //sf_count_t	sf_writef_float	(SNDFILE *sndfile, const float *ptr, sf_count_t frames) ;
+//    sf_writef_float(file,output,numsamples); 
+//    //sf_writef_float(file,mp.residual_,numsamples);
+//    sf_close(file);
