@@ -816,4 +816,20 @@ const char *strings[] = {
     "/data/audio/mirdata/EMcorpus/electroacoustic/Bernard Parmegiani/De Natura Sonorum/Matières Induites.wav",
     "/data/audio/mirdata/EMcorpus/electroacoustic/Bernard Parmegiani/De Natura Sonorum/Natures Éphémères.wav",
     "/data/audio/mirdata/EMcorpus/electroacoustic/Bernard Parmegiani/De Natura Sonorum/Ondes Croisées.wav",
-    "/data/audio/mirdata/EMcorpus/electroacousti
+    "/data/audio/mirdata/EMcorpus/electroacoustic/Bernard Parmegiani/De Natura Sonorum/Pliens Et Déliés.wav",
+    "/data/audio/mirdata/EMcorpus/electroacoustic/Bernard Parmegiani/De Natura Sonorum/Points Contre Champs.wav",
+    "/data/audio/mirdata/EMcorpus/pioneers/anthology/Broken music composition.wav",
+    "/data/audio/mirdata/EMcorpus/pioneers/anthology/Demeures aquatiques.wav",
+    "/data/audio/mirdata/EMcorpus/pioneers/anthology/Pièce électronique no. 3.wav",
+    "/data/audio/mirdata/EMcorpus/pioneers/anthology/Sediment.wav",
+    "/data/audio/mirdata/EMcorpus/pioneers/Stockhausen/Telemusik.wav",
+    "/data/audio/mirdata/EMcorpus/electroacoustic/Elsa Justel/Alba Sud.wav",
+    "/data/audio/mirdata/EMcorpus/electroacoustic/Elsa Justel/Au loin... bleu.wav",
+    "/data/audio/mirdata/EMcorpus/electroacoustic/Elsa Justel/Du libe tu?.wav",
+    "/data/audio/mirdata/EMcorpus/electroacoustic/Elsa Justel/Mâts.wav",
+    "/data/audio/mirdata/EMcorpus/electroacoustic/Hildegard Westerkamp/Beneath The Forest Floor (1992).wav",
+    "/data/audio/mirdata/EMcorpus/electroacoustic/Hildegard Westerkamp/Cricket Voice (1987).wav"
+};
+
+
+//{"one","two","three"};
