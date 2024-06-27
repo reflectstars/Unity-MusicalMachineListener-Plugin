@@ -48,4 +48,94 @@ int main (int argc, const char * argv[]) {
     SetupAudioFeatureExtractor(44100.0,BLOCKSIZE);
     //SetupAudioFeatureExtractor(48000.0,BLOCKSIZE);
         
-        std::cout << j << " " << strings[j] << std::end
+        std::cout << j << " " << strings[j] << std::endl;
+        
+        //SoundFile sound(strings[j]);
+        
+        SoundFile sound("/data/durham/teaching/creativemusictechnology/quiz/quiz1.wav");
+        //SoundFile sound("/Users/ioi/Desktop/silence.wav");
+        
+        //SoundFile sound("/data/audio/littleaudio/galv.wav"); //aaahhh
+    
+    //10 seconds 
+   	//SoundFile sound("/data/audio/mirdata/EMcorpus/Björk/Homogenic/Pluto.wav");
+
+    numsamples = sound.numframes;
+        
+        //analyse at most 2m from start
+        if(numsamples>maxlength) numsamples = maxlength;
+    
+    //float block[BLOCKSIZE];
+    
+    int position = 0;
+        int blockcount = 0;
+    
+    while (position<(numsamples-BLOCKSIZE)) {
+       
+        //BLOCKSIZE samples to take every time
+        Calculate(sound.data + position,features);
+        
+        
+        //assess max and min
+        for(i=0; i< NUMFEATURES; ++i) {
+            //
+            featurenow = features[i];
+        
+            if(featurenow<minima[i]) minima[i] = featurenow;
+            if(featurenow>maxima[i]) maxima[i] = featurenow;
+            
+        }
+        
+       
+        if(features[14]>0.5) {std::cout << "onset!" << std::endl;}
+        if(features[15]>0.5) {std::cout << "beat!" << std::endl;}
+        
+        
+        if(blockcount%POLL==0) {
+        
+        std::cout << position;
+//        
+        for(int i=0; i< NUMFEATURES; ++i) {
+            
+            std::cout << " " << features[i];
+        }
+        
+            //convert to MIDI note numbers
+            
+            //(((log2( features[6]/440.0)) * 12) + 69);
+//           std::cout << " " << (features[6]);  //just pitch //just spectral clarity
+        
+        std::cout << std::endl;
+        
+        // << " " << features[0] << " " << features[1] << " " << features[2] <<  " " << features[3] << std::endl;
+        
+        }
+        
+        
+        position += BLOCKSIZE;
+        ++blockcount;
+    }
+    
+    
+    //sound.data,numsamples
+
+    
+    
+    //numsamples = mp.numsamples_;
+    
+    //float * output = new float[numsamples];
+    
+    //for(int i=199680; i<200000; ++i) {
+        //
+        //        std::cout << i << " " << output[i] << std::endl;
+        //
+        //    }
+    
+
+    DeleteAudioFeatureExtractor();
+        
+    }
+    
+       std::cout << "[";
+    for(i=0; i< NUMFEATURES; ++i)
+        std::cout << m
