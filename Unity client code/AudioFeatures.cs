@@ -351,3 +351,77 @@ public class AudioFeatures : MonoBehaviour
             {
 
 
+                for (i = 0; i < dataLen; ++i)
+                {
+                    //assumes channels = 2
+                    int baseindex = i * channels;
+
+                    fftbufferL[i] = data[baseindex];
+                    fftbufferR[i] = data[baseindex+1];
+
+                }
+
+
+                //fftsize
+                getFillArrayNativeL(fftbufferL, rawfeaturedataL);
+                getFillArrayNativeR(fftbufferR, rawfeaturedataR);
+
+                //IIR low pass
+
+                for (i = 0; i < 15; ++i)
+                {
+                    featuredataL[i] = (alpha * rawfeaturedataL[i]) + ((1 - alpha) * featuredataL[i]);
+                    featuredataR[i] = (alpha * rawfeaturedataR[i]) + ((1 - alpha) * featuredataR[i]);
+
+
+                    //safety
+                    if (Single.IsNaN(featuredataL[i]))
+                    {
+
+                        featuredataL[i] = 0;
+                    }
+
+                    if (Single.IsNaN(featuredataR[i]))
+                    {
+
+                        featuredataR[i] = 0;
+                    }
+
+                }
+
+
+                //
+
+                centroidL = featuredataL[0];
+                powerL = featuredataL[1];
+                irregularityL = featuredataL[2];
+                spectralentropyL = featuredataL[3];
+                sensorydissonanceL = featuredataL[4];
+                // rms = featuredata[5];
+                // zcr = featuredata[6];
+                keyclarityL = featuredataL[5];
+                qitchL = featuredataL[6];
+
+                densityofonsetsL = featuredataL[7];
+                meanIOIL = featuredataL[8];
+                stddevIOIL = featuredataL[9];
+
+                beathistogramentropyL = featuredataL[10];
+                beathistogramfirsttosecondratioL = featuredataL[11];
+                beathistogramdiversityL = featuredataL[12];
+                beathistogrammetricityL = featuredataL[13];
+
+                onsetL = featuredataL[14];
+
+                onsetdetectedL = rawfeaturedataL[14];
+
+                beatdetectedL = rawfeaturedataL[15];
+
+
+                centroidR = featuredataR[0];
+                powerR = featuredataR[1];
+                irregularityR = featuredataR[2];
+                spectralentropyR = featuredataR[3];
+                sensorydissonanceR = featuredataR[4];
+                // rms = featuredata[5];
+                // zcr = 
