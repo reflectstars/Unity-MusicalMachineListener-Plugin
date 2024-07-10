@@ -145,4 +145,113 @@ public class AudioFeatures : MonoBehaviour
 
         AudioConfiguration config = AudioSettings.GetConfiguration();
         //config.dspBufferSize = 64;
-        //AudioSettin
+        //AudioSettings.Reset(config);
+
+        blocksize = config.dspBufferSize;
+        sampleRate = config.sampleRate;
+
+        int ok = SetupAudioFeatureExtractor(sampleRate, blocksize);
+       
+        fftbuffer2 = new float[blocksize];
+
+        //numfeatures = 10; 
+        rawfeaturedata = new float[numfeatures];
+        featuredata = new float[numfeatures];
+
+        for (int i = 0; i < blocksize; ++i)
+        {
+            fftbuffer2[i] = 0.0f;
+        }
+
+        for (int i = 0; i < numfeatures; ++i)
+        {
+            rawfeaturedata[i] = 0.0f;
+            featuredata[i] = 0.0f;
+        }
+
+        if(stereoseparatedextraction)
+        {
+            ok = SetupAudioFeatureExtractorL(sampleRate, blocksize);
+            ok = SetupAudioFeatureExtractorR(sampleRate, blocksize);
+
+            fftbufferL = new float[blocksize];
+            fftbufferR = new float[blocksize];
+
+            //numfeatures = 10; 
+            rawfeaturedataL = new float[numfeatures];
+            featuredataL = new float[numfeatures];
+            rawfeaturedataR = new float[numfeatures];
+            featuredataR = new float[numfeatures];
+
+            for (int i = 0; i < blocksize; ++i)
+            {
+                fftbufferL[i] = 0.0f;
+                fftbufferR[i] = 0.0f;
+            }
+
+            for (int i = 0; i < numfeatures; ++i)
+            {
+                rawfeaturedataL[i] = 0.0f;
+                featuredataL[i] = 0.0f;
+                rawfeaturedataR[i] = 0.0f;
+                featuredataR[i] = 0.0f;
+            }
+
+        }
+
+
+
+        _audioSource = GetComponent<AudioSource>();
+
+        awakened = true;
+
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+
+        if (Input.GetKeyDown("space"))
+        {
+            print("space key was pressed");
+
+            //_audioSource.clip()
+
+
+        }
+
+    }
+
+
+
+
+
+    public unsafe void getFillArrayNative(float[] sampledata, float[] featurevalues)
+    {
+        //Pin Memory
+        fixed (float* p = sampledata)
+        {
+            fixed (float* q = featurevalues)
+            {
+                Calculate(p, q);
+
+            }
+        }
+    }
+
+
+    public unsafe void getFillArrayNativeL(float[] sampledata, float[] featurevalues)
+    {
+        //Pin Memory
+        fixed (float* p = sampledata)
+        {
+            fixed (float* q = featurevalues)
+            {
+                CalculateL(p, q);
+
+            }
+        }
+    }
+
+
+    pub
