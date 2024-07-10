@@ -254,4 +254,100 @@ public class AudioFeatures : MonoBehaviour
     }
 
 
-    pub
+    public unsafe void getFillArrayNativeR(float[] sampledata, float[] featurevalues)
+    {
+        //Pin Memory
+        fixed (float* p = sampledata)
+        {
+            fixed (float* q = featurevalues)
+            {
+                CalculateR(p, q);
+
+            }
+        }
+    }
+
+
+
+    void OnAudioFilterRead(float[] data, int channels)
+    {
+
+        if (awakened)
+        {
+            int i;
+
+            //double samplenow = AudioSettings.dspTime * sampleRate;
+            int dataLen = data.Length / channels;
+
+
+            for (i = 0; i < dataLen; ++i)
+            {
+                int baseindex = i * channels;
+
+                float sum = 0.0f;
+
+                for (int j = 0; j < channels; ++j)
+                {
+                    //data[baseindex + j] += 0.0f;
+                    sum += data[baseindex + j];
+                };
+
+                fftbuffer2[i] = sum * 0.5f;
+            }
+
+
+            //fftsize
+            getFillArrayNative(fftbuffer2, rawfeaturedata);
+
+
+            //IIR low pass
+
+            for (i = 0; i < 15; ++i)
+            { 
+            featuredata[i] = (alpha * rawfeaturedata[i]) + ((1 - alpha) * featuredata[i]); 
+
+                //safety
+            if(Single.IsNaN(featuredata[i]))
+                {
+
+                    featuredata[i] = 0; 
+                }
+
+            }
+
+
+                //
+
+            centroid = featuredata[0];
+            power = featuredata[1];
+            irregularity = featuredata[2];
+            spectralentropy = featuredata[3];
+            sensorydissonance = featuredata[4];
+            // rms = featuredata[5];
+            // zcr = featuredata[6];
+            keyclarity = featuredata[5];
+            qitch = featuredata[6];
+
+            densityofonsets = featuredata[7];
+            meanIOI = featuredata[8];
+            stddevIOI = featuredata[9];
+
+            beathistogramentropy = featuredata[10];
+            beathistogramfirsttosecondratio = featuredata[11];
+            beathistogramdiversity = featuredata[12];
+            beathistogrammetricity = featuredata[13];
+
+            onset = featuredata[14];
+
+            onsetdetected = rawfeaturedata[14];
+
+
+            beatdetected = rawfeaturedata[15];
+
+            //Debug.Log("external centroid = " + centroid);
+
+
+            if (stereoseparatedextraction)
+            {
+
+
