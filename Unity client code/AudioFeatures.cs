@@ -424,4 +424,31 @@ public class AudioFeatures : MonoBehaviour
                 spectralentropyR = featuredataR[3];
                 sensorydissonanceR = featuredataR[4];
                 // rms = featuredata[5];
-                // zcr = 
+                // zcr = featuredata[6];
+                keyclarityR = featuredataR[5];
+                qitchR = featuredataR[6];
+
+                densityofonsetsR = featuredataR[7];
+                meanIOIR = featuredataR[8];
+                stddevIOIR = featuredataR[9];
+
+                beathistogramentropyR = featuredataR[10];
+                beathistogramfirsttosecondratioR = featuredataR[11];
+                beathistogramdiversityR = featuredataR[12];
+                beathistogrammetricityR = featuredataR[13];
+
+                onsetR = featuredataR[14];
+
+                onsetdetectedR = rawfeaturedataR[14];
+
+                beatdetectedR = rawfeaturedataR[15];
+
+            }
+
+
+
+
+            }
+    }
+
+}
