@@ -394,4 +394,9 @@ int kiss_fft_next_fast_size(int n)
         while ( (m%2) == 0 ) m/=2;
         while ( (m%3) == 0 ) m/=3;
         while ( (m%5) == 0 ) m/=5;
-        if (m<=1
+        if (m<=1)
+            break; /* n is completely factorable by twos, threes, and fives */
+        n++;
+    }
+    return n;
+}
