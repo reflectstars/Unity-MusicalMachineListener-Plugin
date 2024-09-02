@@ -312,4 +312,86 @@ void kf_factor(int n,int * facbuf)
             switch (p) {
                 case 4: p = 2; break;
                 case 2: p = 3; break;
-                default: p
+                default: p += 2; break;
+            }
+            if (p > floor_sqrt)
+                p = n;          /* no more factors, skip to end */
+        }
+        n /= p;
+        *facbuf++ = p;
+        *facbuf++ = n;
+    } while (n > 1);
+}
+
+/*
+ *
+ * User-callable function to allocate all necessary storage space for the fft.
+ *
+ * The return value is a contiguous block of memory, allocated with malloc.  As such,
+ * It can be freed with free(), rather than a kiss_fft-specific function.
+ * */
+kiss_fft_cfg kiss_fft_alloc(int nfft,int inverse_fft,void * mem,size_t * lenmem )
+{
+    kiss_fft_cfg st=NULL;
+    size_t memneeded = sizeof(struct kiss_fft_state)
+        + sizeof(kiss_fft_cpx)*(nfft-1); /* twiddle factors*/
+
+    if ( lenmem==NULL ) {
+        st = ( kiss_fft_cfg)KISS_FFT_MALLOC( memneeded );
+    }else{
+        if (mem != NULL && *lenmem >= memneeded)
+            st = (kiss_fft_cfg)mem;
+        *lenmem = memneeded;
+    }
+    if (st) {
+        int i;
+        st->nfft=nfft;
+        st->inverse = inverse_fft;
+
+        for (i=0;i<nfft;++i) {
+            const double pi=3.141592653589793238462643383279502884197169399375105820974944;
+            double phase = -2*pi*i / nfft;
+            if (st->inverse)
+                phase *= -1;
+            kf_cexp(st->twiddles+i, phase );
+        }
+
+        kf_factor(nfft,st->factors);
+    }
+    return st;
+}
+
+
+void kiss_fft_stride(kiss_fft_cfg st,const kiss_fft_cpx *fin,kiss_fft_cpx *fout,int in_stride)
+{
+    if (fin == fout) {
+        //NOTE: this is not really an in-place FFT algorithm.
+        //It just performs an out-of-place FFT into a temp buffer
+        kiss_fft_cpx * tmpbuf = (kiss_fft_cpx*)KISS_FFT_TMP_ALLOC( sizeof(kiss_fft_cpx)*st->nfft);
+        kf_work(tmpbuf,fin,1,in_stride, st->factors,st);
+        memcpy(fout,tmpbuf,sizeof(kiss_fft_cpx)*st->nfft);
+        KISS_FFT_TMP_FREE(tmpbuf);
+    }else{
+        kf_work( fout, fin, 1,in_stride, st->factors,st );
+    }
+}
+
+void kiss_fft(kiss_fft_cfg cfg,const kiss_fft_cpx *fin,kiss_fft_cpx *fout)
+{
+    kiss_fft_stride(cfg,fin,fout,1);
+}
+
+
+void kiss_fft_cleanup(void)
+{
+    // nothing needed any more
+}
+
+int kiss_fft_next_fast_size(int n)
+{
+    while(1) {
+        int m=n;
+        while ( (m%2) == 0 ) m/=2;
+        while ( (m%3) == 0 ) m/=3;
+        while ( (m%5) == 0 ) m/=5;
+        if (m<=1
